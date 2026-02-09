@@ -1,0 +1,29 @@
+body {
+    background-color: #FBEF76;
+}
+
+h1 , p {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    font-family: "indie flower", cursive;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container img {
+    width: 300px;
+    height: auto;
+}
+
+.cooked {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vh;
+    height: 100vh;
+}
