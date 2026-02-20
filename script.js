@@ -1,21 +1,15 @@
-// This site is still underconstructuon. See anyway?
-window.onload = function() {
-    alert("This site is still underconstructuon. See anyway?");
-};
-
 const startBtn = document.getElementById('startBtn');
 const statusArea = document.querySelector('.status-area');
 const controls = document.querySelector('.controls');
 const progressBar = document.getElementById('progressBar');
 const timeLeft = document.getElementById('timeLeft');
 
-// Egg images
 const rawEgg = document.getElementById('rawEgg');
 const boiling = document.getElementById('boiling');
 const almostBoiled = document.getElementById('almostBoiled');
 const cookedEgg = document.getElementById('cookedEgg');
 
-// --- SETTINGS ---
+// basic settings
 const TOTAL_TIME = 900; 
 
 const STAGES = [
@@ -25,7 +19,7 @@ const STAGES = [
   { pct: 100, show: 'cookedEgg'   },
 ];
 
-// --- RINGTONE (uses Web Audio API — no external file needed) ---
+// ringtone (uses Web Audio API — no external file needed)
 function playRingtone() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -72,11 +66,11 @@ function getCurrentStage(pct) {
   return current;
 }
 
-// --- MAIN TIMER ---
+//main timer
 let timerInterval = null;
 
 function startTimer() {
-  // Reset state
+  // reset state
   clearInterval(timerInterval);
   progressBar.style.width = '0%';
   statusArea.style.display = 'block';
@@ -90,17 +84,17 @@ function startTimer() {
     const pct = (elapsed / TOTAL_TIME) * 100;
     const remaining = TOTAL_TIME - elapsed;
 
-    // Update progress bar
+    // update progress bar
     progressBar.style.width = pct + '%';
 
-    // Update countdown text
+    // update countdown text
     timeLeft.textContent = remaining + ' ';
 
-    // Update egg image based on stage
+    // update egg image based on stage
     const stage = getCurrentStage(pct);
     showEgg(stage.show);
 
-    // Timer done
+    // timer done
     if (elapsed >= TOTAL_TIME) {
       clearInterval(timerInterval);
       timeLeft.textContent = '0 ';
@@ -113,5 +107,6 @@ function startTimer() {
 }
 
 startBtn.addEventListener('click', startTimer);
+
 
 showEgg('rawEgg');
