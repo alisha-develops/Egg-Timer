@@ -103,3 +103,37 @@ h1 {
     transform: scale(0.98);
 }
 
+.paragraph {
+    max-width: 320px;
+    text-align: center;
+    border: 1.5px solid #dd3840;
+    border-radius: 16px;
+    background: #e8ecab;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1rem 1.2rem;
+    margin: 1rem auto;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.paragraph p {
+   color: #5a4a1e;
+   font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .paragraph {
+    max-width: 85%;
+    padding: 1rem 1.2rem;
+    margin: 1rem auto;
+  }
+
+  .paragraph p {
+    font-size: 0.85rem;
+  }
+}
