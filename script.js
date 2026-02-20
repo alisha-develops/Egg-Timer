@@ -24,79 +24,53 @@ const STAGES = [
 ];
 
 // --- SERVICE WORKER REGISTRATION ---
-async function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) {
-    console.warn('Service Workers not supported in this browser.');
-    return;
-  }
-  try {
-    await navigator.serviceWorker.register('/sw.js');
-    console.log('Service worker registered.');
-  } catch (err) {
-    console.error('Service worker registration failed:', err);
-  }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    console.log('[App] SW registered:', reg.scope);
+  }).catch(err => {
+    console.error('[App] SW registration failed:', err);
+  });
 }
-registerServiceWorker();
+
+// --- HELPER: send message to SW (waits until SW is ready) ---
+function sendToSW(message) {
+  navigator.serviceWorker.ready.then(reg => {
+    if (reg.active) {
+      reg.active.postMessage(message);
+    }
+  });
+}
 
 // --- NOTIFICATION PERMISSION ---
 async function requestNotificationPermission() {
-  if (!('Notification' in window)) {
-    console.warn('Notifications not supported.');
-    return false;
-  }
+  if (!('Notification' in window)) return false;
   if (Notification.permission === 'granted') return true;
   if (Notification.permission === 'denied') return false;
   const result = await Notification.requestPermission();
   return result === 'granted';
 }
 
-// --- RINGTONE (Web Audio API — plays when user is on the tab) ---
+// --- RINGTONE (plays when tab is active) ---
 function playRingtone() {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const notes = [523, 659, 784, 1047, 784, 659, 523];
-  let time = ctx.currentTime;
-  notes.forEach((freq) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, time);
-    gain.gain.setValueAtTime(0.4, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
-    osc.start(time);
-    osc.stop(time + 0.3);
-    time += 0.32;
-  });
-}
-
-// --- FINISH: called when timer hits zero, whether tab is open or not ---
-function handleTimerDone() {
-  clearInterval(timerInterval);
-  progressBar.style.width = '100%';
-  timeLeft.textContent = '0 ';
-  showEgg('cookedEgg');
-
-  // Play audio melody (only works if tab is active/visible)
-  playRingtone();
-
-  // Show in-tab system notification too (works even if tab is in background)
-  if (Notification.permission === 'granted') {
-    new Notification('🥚 Your egg is ready!', {
-      body: 'Time to take it off the heat!',
-      icon: '/favicon.ico',   // swap for your egg icon path if you have one
-      vibrate: [200, 100, 200],
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523, 659, 784, 1047, 784, 659, 523];
+    let time = ctx.currentTime;
+    notes.forEach((freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+      gain.gain.setValueAtTime(0.4, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+      osc.start(time);
+      osc.stop(time + 0.3);
+      time += 0.32;
     });
-  }
-
-  startBtn.textContent = 'Boil Again?';
-  controls.style.display = 'block';
-
-  // Clear the stored end time
-  localStorage.removeItem('eggEndTime');
-  // Tell the service worker to cancel its scheduled notification
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: 'CANCEL_TIMER' });
+  } catch(e) {
+    console.warn('[App] Audio failed:', e);
   }
 }
 
@@ -118,60 +92,74 @@ function getCurrentStage(pct) {
   return current;
 }
 
+// --- TIMER DONE ---
+function handleTimerDone() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  progressBar.style.width = '100%';
+  timeLeft.textContent = '0';
+  showEgg('cookedEgg');
+  playRingtone();
+
+  if (Notification.permission === 'granted') {
+    try {
+      new Notification('🥚 Your egg is ready!', {
+        body: 'Time to take it off the heat!',
+        icon: '/favicon.ico',
+        tag: 'egg-timer',
+        requireInteraction: true,
+      });
+    } catch(e) {
+      console.warn('[App] Notification failed:', e);
+    }
+  }
+
+  sendToSW({ type: 'CANCEL_TIMER' });
+  localStorage.removeItem('eggEndTime');
+
+  startBtn.textContent = 'Boil Again?';
+  statusArea.style.display = 'block';
+  controls.style.display = 'block';
+}
+
 // --- MAIN TIMER ---
 let timerInterval = null;
 
 async function startTimer() {
-  // Ask for notification permission on first start
   await requestNotificationPermission();
 
   clearInterval(timerInterval);
-  progressBar.style.width = '0%';
-  statusArea.style.display = 'block';
+  timerInterval = null;
   controls.style.display = 'none';
+  statusArea.style.display = 'block';
+  progressBar.style.width = '0%';
+  timeLeft.textContent = String(TOTAL_TIME);
   showEgg('rawEgg');
+  startBtn.textContent = 'Boiling...';
 
-  // Save end time so the service worker and page reloads can sync
   const endTime = Date.now() + TOTAL_TIME * 1000;
-  localStorage.setItem('eggEndTime', endTime);
+  localStorage.setItem('eggEndTime', String(endTime));
 
-  // Tell the service worker when the timer should fire
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({
-      type: 'START_TIMER',
-      endTime: endTime,
-    });
-  } else {
-    // SW may not be active yet on very first load — wait for it
-    navigator.serviceWorker.ready.then(reg => {
-      reg.active.postMessage({
-        type: 'START_TIMER',
-        endTime: endTime,
-      });
-    });
-  }
+  sendToSW({ type: 'START_TIMER', endTime });
 
-  // Run the visible countdown on the page
   timerInterval = setInterval(() => {
     const now = Date.now();
     const remaining = Math.max(0, Math.round((endTime - now) / 1000));
     const elapsed = TOTAL_TIME - remaining;
-    const pct = (elapsed / TOTAL_TIME) * 100;
+    const pct = Math.min(100, (elapsed / TOTAL_TIME) * 100);
 
     progressBar.style.width = pct + '%';
-    timeLeft.textContent = remaining + ' ';
+    timeLeft.textContent = String(remaining);
     showEgg(getCurrentStage(pct).show);
 
-    if (remaining <= 0) {
-      handleTimerDone();
-    }
-  }, 500); // tick every 500ms so it stays accurate
+    if (remaining <= 0) handleTimerDone();
+  }, 500);
 }
 
 startBtn.addEventListener('click', startTimer);
 
-// --- RESUME TIMER IF PAGE RELOADED WHILE RUNNING ---
-// (e.g. user accidentally refreshed the tab)
+// --- RESUME IF PAGE RELOADED MID-TIMER ---
 (function resumeIfRunning() {
   const savedEnd = localStorage.getItem('eggEndTime');
   if (!savedEnd) return;
@@ -180,28 +168,31 @@ startBtn.addEventListener('click', startTimer);
   const remaining = Math.round((endTime - Date.now()) / 1000);
 
   if (remaining <= 0) {
-    // Timer already done before page loaded — just reset cleanly
     localStorage.removeItem('eggEndTime');
+    showEgg('cookedEgg');
+    progressBar.style.width = '100%';
+    timeLeft.textContent = '0';
+    statusArea.style.display = 'block';
+    startBtn.textContent = 'Boil Again?';
+    controls.style.display = 'block';
     return;
   }
 
-  // Pick up the timer visually where it left off
   statusArea.style.display = 'block';
   controls.style.display = 'none';
+  startBtn.textContent = 'Boiling...';
 
   timerInterval = setInterval(() => {
     const now = Date.now();
     const rem = Math.max(0, Math.round((endTime - now) / 1000));
     const elapsed = TOTAL_TIME - rem;
-    const pct = (elapsed / TOTAL_TIME) * 100;
+    const pct = Math.min(100, (elapsed / TOTAL_TIME) * 100);
 
     progressBar.style.width = pct + '%';
-    timeLeft.textContent = rem + ' ';
+    timeLeft.textContent = String(rem);
     showEgg(getCurrentStage(pct).show);
 
-    if (rem <= 0) {
-      handleTimerDone();
-    }
+    if (rem <= 0) handleTimerDone();
   }, 500);
 })();
 
