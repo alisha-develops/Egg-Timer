@@ -102,17 +102,18 @@ function handleTimerDone() {
   showEgg('cookedEgg');
   playRingtone();
 
+  // Android Chrome blocks new Notification() from the page directly.
+  // Must go through the Service Worker's showNotification instead.
   if (Notification.permission === 'granted') {
-    try {
-      new Notification('🥚 Your egg is ready!', {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification('🥚 Your egg is ready!', {
         body: 'Time to take it off the heat!',
         icon: '/favicon.ico',
         tag: 'egg-timer',
         requireInteraction: true,
+        vibrate: [300, 100, 300, 100, 300],
       });
-    } catch(e) {
-      console.warn('[App] Notification failed:', e);
-    }
+    }).catch(e => console.warn('[App] SW notification failed:', e));
   }
 
   sendToSW({ type: 'CANCEL_TIMER' });
