@@ -8,15 +8,15 @@ This is my Egg Timer project—made for anyone who wants to boil the perfect egg
 - As the timer runs, the egg image updates to show you it’s almost cooked, and when it’s done, you’ll see the final stage image, so no guessing!
 
 # Timing
--Soft-boiled: ~4–6 minutes
--Medium: ~7–9 minutes
--Hard-boiled: ~10–12 minutes
--Extra firm: up to 15–20 minutes
+- Soft-boiled: ~4–6 minutes
+- Medium: ~7–9 minutes
+- Hard-boiled: ~10–12 minutes
+- Extra firm: up to 15–20 minutes
 
 # Features
-*⏲️ Simple countdown timer
-*🥚 Stage-based egg images to track progress
-*🎯 Minimal design, maximum simplicity
+* ⏲️ Simple countdown timer
+* 🥚 Stage-based egg images to track progress
+* 🎯 Minimal design, maximum simplicity
 
 # How to Use
  - Open the app.
