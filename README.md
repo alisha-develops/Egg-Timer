@@ -25,6 +25,6 @@ This is my Egg Timer project—made for anyone who wants to boil the perfect egg
     Done! Grab your perfectly boiled egg. 🥳
 
 # Tech Stack
-- HTML <img src="https://raw.githubusercontent.com/github/explore/main/topics/html/html.png" alt="HTML" width="40" height="40"/>
-- CSS <img src="https://raw.githubusercontent.com/github/explore/main/topics/css/css.png" alt="CSS" width="40" height="40"/>
-- JavaScript <img src="https://raw.githubusercontent.com/github/explore/main/topics/javascript/javascript.png" alt="JavaScript" width="40" height="40"/>
+<img src="https://raw.githubusercontent.com/github/explore/main/topics/html/html.png" alt="HTML" width="40" height="40"/>
+<img src="https://raw.githubusercontent.com/github/explore/main/topics/css/css.png" alt="CSS" width="40" height="40"/>
+<img src="https://raw.githubusercontent.com/github/explore/main/topics/javascript/javascript.png" alt="JavaScript" width="40" height="40"/>
