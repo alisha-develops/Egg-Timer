@@ -1,0 +1,248 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(rgba(236, 84, 84, 0.5), rgba(39, 1, 1, 0.5)),
+    url('https://img.freepik.com/premium-vector/scrambled-eggs-seamless-pattern-vector-background-from-eggs-design_98480-1335.jpg');
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.eggDisplay canvas {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    background: transparent;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding: 20px 0;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page.hidden {
+    display: none;
+}
+
+header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+.backBtn {
+    position: absolute;
+    left: 20px;
+    font-size: 16px;
+    padding: 8px 14px;
+    background: #c9964a;
+    color: #50472f;
+    border: 2px solid #5a4a1e;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s, transform 0.15s;
+}
+
+.backBtn:hover {
+    background: #b07d35;
+    transform: translateX(-3px);
+}
+
+.backBtn:active {
+    transform: scale(0.97);
+}
+
+#homePage {
+    text-align: center;
+}
+
+.chooseEgg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.eggCards {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 180px;
+    aspect-ratio: 1 / 1;
+    background: #c9964a;
+    border-radius: 20px;
+    border: 2px solid #5a4a1e;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card:active {
+    transform: scale(0.97);
+}
+
+.cardSub {
+    font-size: 13px;
+    font-weight: normal;
+    color: #5a4a1e;
+    opacity: 0.85;
+}
+
+.timerContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.eggDisplay {
+    position: relative;
+    flex: 1;
+    max-height: calc(100vh - 260px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.eggDisplay div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eggDisplay img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+}
+
+.paragraph {
+    max-width: 320px;
+    text-align: center;
+    border: 1.5px solid #dd3840;
+    border-radius: 16px;
+    background: #e8ecab;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1rem 1.2rem;
+    margin: 1rem auto;
+    animation: float 3s ease-in-out infinite;
+}
+
+.paragraph p {
+    color: #5a4a1e;
+    font-size: 0.95rem;
+}
+
+@keyframes float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+.status-area {
+    padding: 16px 20px 0;
+}
+
+.timeLine {
+    width: 100%;
+    height: 30px;
+    background-color: #803a3a;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #ff6b6b;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.time-display {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.controls {
+    padding: 16px 20px 24px;
+    text-align: center;
+}
+
+#startBtn {
+    padding: 12px 30px;
+    font-size: 18px;
+    background-color: #ff6b6b;
+    color: white;
+    border: 2px solid white;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startBtn:hover {
+    background-color: #ff5252;
+}
+
+#startBtn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 600px) {
+    .card {
+        width: 140px;
+        font-size: 15px;
+    }
+
+    .paragraph {
+        max-width: 85%;
+        padding: 1rem 1.2rem;
+        margin: 0.75rem auto;
+    }
+
+    .paragraph p {
+        font-size: 0.85rem;
+    }
+}
