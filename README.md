@@ -4,14 +4,13 @@ This is my Egg Timer project—made for anyone who wants to boil the perfect egg
 
 # ⏱ How it works:
 
-- If your water is already boiling, it takes about 15 minutes to fully boil an egg.
+- If your water is already boiling, it takes about 15-20 minutes to fully boil an egg.
 - As the timer runs, the egg image updates to show you it’s almost cooked, and when it’s done, you’ll see the final stage image, so no guessing!
 
-# Timing
-- Soft-boiled: ~4–6 minutes
-- Medium: ~7–9 minutes
-- Hard-boiled: ~10–12 minutes
-- Extra firm: up to 15–20 minutes
+# Timing and stages
+- Soft-boiled: ~9–10 minutes
+- Medium: ~14–15 minutes
+- Hard-boiled: ~15–20 minutes
 
 # Features
 * ⏲️ Simple countdown timer
@@ -20,8 +19,9 @@ This is my Egg Timer project—made for anyone who wants to boil the perfect egg
 
 # How to Use
  - Open the app.
+ - Choose your egg type.
  - Click “Start” and let it run.
- - Watch the egg image change as it cooks.
+ - Watch the egg change its state as it cooks.
     Done! Grab your perfectly boiled egg. 🥳
 
 # Tech Stack
