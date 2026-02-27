@@ -1,6 +1,6 @@
 # 🥚 Egg Timer
 
-This is my Egg Timer project—made for anyone who wants to boil the perfect egg without overthinking it.
+This is my Egg Timer project, made for anyone who wants to boil the perfect egg without overthinking it.
 
 # ⏱ How it works:
 
